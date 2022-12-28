@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OrbitalMechanics
 {
-    class Orbit
+    public class Orbit
     {
         private double eccentricity;                                    // Unitless
         private double semiMajorAxis_m;                                 // Meters
@@ -27,10 +27,10 @@ namespace OrbitalMechanics
         }
         public double SemiMajorAxis_m                                   // Meters
         {
-            get { return eccentricity; }
+            get { return semiMajorAxis_m; }
             set
             {
-                eccentricity = value;
+                semiMajorAxis_m = value;
                 CalculateApsides();
             }
         }
