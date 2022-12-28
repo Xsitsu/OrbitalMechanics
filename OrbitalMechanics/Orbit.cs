@@ -47,6 +47,19 @@ namespace OrbitalMechanics
             get { return apoapsis_m; }
         }
 
+        public void SetOrbitData(double eccentricity, double semiMajorAxis_m, double inclination_deg,
+        double longitudeOfAN_deg, double argumentOfPeriapsis_deg, double periapsisEpoch_sec)
+        {
+            this.eccentricity = eccentricity;
+            this.semiMajorAxis_m = semiMajorAxis_m;
+            this.Inclination_deg = inclination_deg;
+            this.LongitudeOfAN_deg = longitudeOfAN_deg;
+            this.ArgumentOfPeriapsis_deg = argumentOfPeriapsis_deg;
+            this.PeriapsisEpoch_sec = periapsisEpoch_sec;
+
+            CalculateApsides();
+        }
+
         private void CalculateApsides()
         {
             periapsis_m = semiMajorAxis_m * (1 - eccentricity);
