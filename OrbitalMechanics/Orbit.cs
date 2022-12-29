@@ -6,31 +6,21 @@ namespace OrbitalMechanics
 {
     public class Orbit
     {
-        private double eccentricity;                                    // Unitless
-        private double semiMajorAxis_m;                                 // Meters
-        //private double inclination_deg;                                 // Degrees
-        //private double longitudeOfAN_deg;                               // Longitude of Ascending Node in degrees
-        //private double argumentOfPeriapsis_deg;                         // Degrees
-        //private double periapsisEpoch_sec;                              // Seconds 
-
-        private double periapsis_m;                                     // Meters
-        private double apoapsis_m;                                      // Meters
-
-        public double Eccentricity                                      // Unitless
+        public double SemiMajorAxis_m                                   // Meters
         {
-            get { return eccentricity; }
+            get { return ellipse_m.SemiMajorAxis_l; }
             set
             {
-                eccentricity = value;
+                ellipse_m.SemiMajorAxis_l = value;
                 CalculateApsides();
             }
         }
-        public double SemiMajorAxis_m                                   // Meters
+        public double Eccentricity                                      // Unitless
         {
-            get { return semiMajorAxis_m; }
+            get { return ellipse_m.Eccentricity; }
             set
             {
-                semiMajorAxis_m = value;
+                ellipse_m.Eccentricity = value;
                 CalculateApsides();
             }
         }
@@ -46,12 +36,16 @@ namespace OrbitalMechanics
         {
             get { return apoapsis_m; }
         }
+        public double SemiMinorAxis_m                                   // Meters
+        {
+            get { return ellipse_m.SemiMinorAxis_l ; }
+        }
 
-        public void SetOrbitData(double eccentricity, double semiMajorAxis_m, double inclination_deg,
+        public void SetOrbitData(double semiMajorAxis_m, double eccentricity, double inclination_deg,
         double longitudeOfAN_deg, double argumentOfPeriapsis_deg, double periapsisEpoch_sec)
         {
-            this.eccentricity = eccentricity;
-            this.semiMajorAxis_m = semiMajorAxis_m;
+            this.ellipse_m.SemiMajorAxis_l = semiMajorAxis_m;
+            this.ellipse_m.Eccentricity = eccentricity;
             this.Inclination_deg = inclination_deg;
             this.LongitudeOfAN_deg = longitudeOfAN_deg;
             this.ArgumentOfPeriapsis_deg = argumentOfPeriapsis_deg;
@@ -62,9 +56,18 @@ namespace OrbitalMechanics
 
         private void CalculateApsides()
         {
-            periapsis_m = semiMajorAxis_m * (1 - eccentricity);
-            apoapsis_m = semiMajorAxis_m * (1 + eccentricity);
+            periapsis_m = ellipse_m.SemiMajorAxis_l - ellipse_m.FocalDistance_l;
+            apoapsis_m = ellipse_m.SemiMajorAxis_l + ellipse_m.FocalDistance_l;
         }
+
+
+        private Ellipse ellipse_m = new Ellipse();                      // Meters (for length members)
+        //private double inclination_deg;                               // Degrees
+        //private double longitudeOfAN_deg;                             // Longitude of Ascending Node in degrees
+        //private double argumentOfPeriapsis_deg;                       // Degrees
+        //private double periapsisEpoch_sec;                            // Seconds
+        private double periapsis_m;                                     // Meters
+        private double apoapsis_m;                                      // Meters
 
     }
 }
