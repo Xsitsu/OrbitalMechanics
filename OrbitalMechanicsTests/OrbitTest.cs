@@ -24,7 +24,5 @@ namespace OrbitalMechanicsTests
 
             Assert.Equal(orbit.SemiMajorAxis_m, orbit.Apoapsis_m);
         }
-
-
     }
 }
