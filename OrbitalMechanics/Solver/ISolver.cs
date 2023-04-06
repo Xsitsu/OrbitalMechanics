@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OrbitalMechanics.Solver
 {
-    public interface ISolver
+    public abstract class ISolver
     {
         public double CalculateOrbitalPeriod_sec(double centerMass_kg, Orbit orbit)
         {
@@ -17,5 +17,7 @@ namespace OrbitalMechanics.Solver
 
             return period;
         }
+        public abstract double GetPercentComplete(double centerMass_kg, Orbit orbit, double atTime_sec);
+        public abstract double GetOrbitDistance_m(Orbit orbit, double percentCompleted);
     }
 }
