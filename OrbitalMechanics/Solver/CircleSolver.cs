@@ -8,16 +8,20 @@ namespace OrbitalMechanics
 {
     public class CircleSolver : ISolver
     {
-        public override double GetPercentComplete(double centerMass_kg, Orbit orbit, double elapsedTime_sec)
-        {
-            double period_sec = CalculateOrbitalPeriod_sec(centerMass_kg, orbit);
-            double percent = elapsedTime_sec / period_sec;
-            percent %= 1;
-            return percent;
-        }
-        public override double GetOrbitDistance_m(Orbit orbit, double percentCompleted)
+        public override double GetOrbitDistance_m(double centerMass_kg, Orbit orbit, double atTime_sec)
         {
             return orbit.SemiMajorAxis_m;
+        }
+        public override double GetOrbitAngle_deg(double centerMass_kg, Orbit orbit, double atTime_sec)
+        {
+            return CalculateMeanAnomaly(centerMass_kg, orbit, atTime_sec);
+        }
+        public override (double, double) CalculateOffset_m(double centerMass_kg, Orbit orbit, double atTime_sec)
+        {
+            double meanAnomaly_deg = CalculateMeanAnomaly(centerMass_kg, orbit, atTime_sec);
+            double x = Math.Cos(meanAnomaly_deg) * orbit.SemiMajorAxis_m;
+            double y = Math.Sin(meanAnomaly_deg) * orbit.SemiMajorAxis_m;
+            return (x, y);
         }
     }
 }

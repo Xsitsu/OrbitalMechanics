@@ -17,7 +17,53 @@ namespace OrbitalMechanics.Solver
 
             return period;
         }
-        public abstract double GetPercentComplete(double centerMass_kg, Orbit orbit, double atTime_sec);
-        public abstract double GetOrbitDistance_m(Orbit orbit, double percentCompleted);
+        public virtual double GetOrbitDistance_m(double centerMass_kg, Orbit orbit, double atTime_sec)
+        {
+            var ret = CalculateOffset_m(centerMass_kg, orbit, atTime_sec);
+            double x = ret.Item1;
+            double y = ret.Item2;
+            return Math.Sqrt((x * x) + (y * y));
+        }
+        public abstract double GetOrbitAngle_deg(double centerMass_kg, Orbit orbit, double atTime_sec);
+        public abstract (double, double) CalculateOffset_m(double centerMass_kg, Orbit orbit, double atTime_sec);
+
+        protected double CalculateMeanAnomaly(double centerMass_kg, Orbit orbit, double atTime_sec)
+        {
+            double period_sec = CalculateOrbitalPeriod_sec(centerMass_kg, orbit);
+            double elapsedTime_sec = atTime_sec - orbit.PeriapsisEpoch_sec;
+            double percent = elapsedTime_sec / period_sec;
+            double angle_deg = percent * 360;
+            return angle_deg;
+        }
+        protected double CalculateEccentricAnomaly(double centerMass_kg, Orbit orbit, double atTime_sec)
+        {
+            double meanAnomaly_deg = CalculateMeanAnomaly(centerMass_kg, orbit, atTime_sec);
+
+            double eccentricAnomaly_deg = meanAnomaly_deg;
+            double tolerance = System.Math.Pow(1, -8);
+
+            while (true)
+            {
+                double delta = (eccentricAnomaly_deg - orbit.Eccentricity * Math.Sin(eccentricAnomaly_deg) - meanAnomaly_deg) / (1 - orbit.Eccentricity * Math.Cos(eccentricAnomaly_deg));
+                eccentricAnomaly_deg -= delta;
+                if (System.Math.Abs(delta) < tolerance)
+                {
+                    break;
+                }
+            }
+
+            return eccentricAnomaly_deg;
+        }
+        protected double CalculateTrueAnomaly(double centerMass_kg, Orbit orbit, double atTime_sec)
+        {
+            double eccentricAnomaly_deg = CalculateEccentricAnomaly(centerMass_kg, orbit, atTime_sec);
+            double eccentricity = orbit.Eccentricity;
+
+            double cosTrueAnomaly = (Math.Cos(eccentricAnomaly_deg) - eccentricity) / (1 - eccentricity * Math.Cos(eccentricAnomaly_deg));
+            double sinTrueAnomaly = Math.Sqrt(1 - eccentricity * eccentricity) * Math.Sin(eccentricAnomaly_deg) / (1 - eccentricity * Math.Cos(eccentricAnomaly_deg));
+            double trueAnomaly = Math.Atan2(sinTrueAnomaly, cosTrueAnomaly);
+
+            return trueAnomaly;
+        }
     }
 }

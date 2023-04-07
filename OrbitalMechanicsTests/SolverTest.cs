@@ -38,45 +38,6 @@ namespace OrbitalMechanicsTests
             Assert.Equal(SIGFIG_Round(expectedPeriod), SIGFIG_Round(calculatedPeriod));
         }
 
-        [Fact]
-        public void PercentCompleteCircle_Zero()
-        {
-            Orbit earthOrbit = CreateEarthOrbit();
-            ISolver solver = new CircleSolver();
-
-            double period_sec = solver.CalculateOrbitalPeriod_sec(Numbers.SolarMassToKG, earthOrbit);
-
-            double calculated = solver.GetPercentComplete(Numbers.SolarMassToKG, earthOrbit, 0);
-            double expected = 0.0;
-
-            Assert.Equal(expected, calculated);
-        }
-        [Fact]
-        public void PercentCompleteCircle_Half()
-        {
-            Orbit earthOrbit = CreateEarthOrbit();
-            ISolver solver = new CircleSolver();
-
-            double period_sec = solver.CalculateOrbitalPeriod_sec(Numbers.SolarMassToKG, earthOrbit);
-
-            double calculated = solver.GetPercentComplete(Numbers.SolarMassToKG, earthOrbit, 0.5 * period_sec);
-            double expected = 0.5;
-
-            Assert.Equal(expected, calculated);
-        }
-        [Fact]
-        public void PercentCompleteCircle_Full()
-        {
-            Orbit earthOrbit = CreateEarthOrbit();
-            ISolver solver = new CircleSolver();
-
-            double period_sec = solver.CalculateOrbitalPeriod_sec(Numbers.SolarMassToKG, earthOrbit);
-
-            double calculated = solver.GetPercentComplete(Numbers.SolarMassToKG, earthOrbit, 1 * period_sec);
-            double expected = 0.0;
-
-            Assert.Equal(expected, calculated);
-        }
 
         private Orbit CreateEarthOrbit()
         {

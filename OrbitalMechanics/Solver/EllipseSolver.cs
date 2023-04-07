@@ -6,13 +6,16 @@ namespace OrbitalMechanics.Solver
 {
     public class EllipseSolver : ISolver
     {
-        public override double GetPercentComplete(double centerMass_kg, Orbit orbit, double atTime_sec)
+        public override double GetOrbitAngle_deg(double centerMass_kg, Orbit orbit, double atTime_sec)
         {
-            throw new NotImplementedException();
+            return CalculateTrueAnomaly(centerMass_kg, orbit, atTime_sec);
         }
-        public override double GetOrbitDistance_m(Orbit orbit, double percentCompleted)
+        public override (double, double) CalculateOffset_m(double centerMass_kg, Orbit orbit, double atTime_sec)
         {
-            throw new NotImplementedException();
+            double eccentricAnomaly_deg = CalculateEccentricAnomaly(centerMass_kg, orbit, atTime_sec);
+            double x = Math.Cos(eccentricAnomaly_deg) + orbit.SemiMajorAxis_m - orbit.Periapsis_m;
+            double y = Math.Sin(eccentricAnomaly_deg);
+            return (x, y);
         }
     }
 }
