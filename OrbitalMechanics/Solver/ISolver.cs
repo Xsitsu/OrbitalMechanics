@@ -19,13 +19,13 @@ namespace OrbitalMechanics.Solver
         }
         public virtual double GetOrbitDistance_m(double centerMass_kg, Orbit orbit, double atTime_sec)
         {
-            var ret = CalculateOffset_m(centerMass_kg, orbit, atTime_sec);
-            double x = ret.Item1;
-            double y = ret.Item2;
+            Offset offset = CalculateOffset_m(centerMass_kg, orbit, atTime_sec);
+            double x = offset.X;
+            double y = offset.Y;
             return Math.Sqrt((x * x) + (y * y));
         }
         public abstract double GetOrbitAngle_deg(double centerMass_kg, Orbit orbit, double atTime_sec);
-        public abstract (double, double) CalculateOffset_m(double centerMass_kg, Orbit orbit, double atTime_sec);
+        public abstract Offset CalculateOffset_m(double centerMass_kg, Orbit orbit, double atTime_sec);
 
         protected double CalculateMeanAnomaly(double centerMass_kg, Orbit orbit, double atTime_sec)
         {

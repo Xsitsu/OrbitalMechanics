@@ -16,12 +16,12 @@ namespace OrbitalMechanics
         {
             return CalculateMeanAnomaly(centerMass_kg, orbit, atTime_sec);
         }
-        public override (double, double) CalculateOffset_m(double centerMass_kg, Orbit orbit, double atTime_sec)
+        public override Offset CalculateOffset_m(double centerMass_kg, Orbit orbit, double atTime_sec)
         {
             double meanAnomaly_deg = CalculateMeanAnomaly(centerMass_kg, orbit, atTime_sec);
             double x = Math.Cos(meanAnomaly_deg) * orbit.SemiMajorAxis_m;
             double y = Math.Sin(meanAnomaly_deg) * orbit.SemiMajorAxis_m;
-            return (x, y);
+            return new Offset(x, y);
         }
     }
 }
