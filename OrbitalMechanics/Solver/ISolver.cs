@@ -42,8 +42,11 @@ namespace OrbitalMechanics.Solver
             double eccentricAnomaly_deg = meanAnomaly_deg;
             double tolerance = System.Math.Pow(1, -8);
 
-            while (true)
+            int maxIterations = 12;
+            int iterationCount = 0;
+            while (iterationCount < maxIterations)
             {
+                iterationCount++;
                 double delta = (eccentricAnomaly_deg - orbit.Eccentricity * Math.Sin(eccentricAnomaly_deg) - meanAnomaly_deg) / (1 - orbit.Eccentricity * Math.Cos(eccentricAnomaly_deg));
                 eccentricAnomaly_deg -= delta;
                 if (System.Math.Abs(delta) < tolerance)
