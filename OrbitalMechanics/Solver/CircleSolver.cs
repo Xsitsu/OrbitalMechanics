@@ -4,7 +4,7 @@ using System.Text;
 using System.Numerics;
 using OrbitalMechanics.Solver;
 
-namespace OrbitalMechanics
+namespace OrbitalMechanics.Solver
 {
     public class CircleSolver : ISolver
     {
