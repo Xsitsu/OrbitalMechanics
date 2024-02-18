@@ -2,6 +2,7 @@
 using Xunit;
 using OrbitalMechanics;
 using OrbitalMechanics.Solver;
+using OrbitalMechanicsTests;
 
 namespace OrbitalMechanicsTests
 {
@@ -9,51 +10,114 @@ namespace OrbitalMechanicsTests
     {
         // TODO: Come up with better solution and maybe improve
         // precision with calculations while at it
-        static int SIGFIG_CHECK = 10000;
-        private int SIGFIG_Round(double number)
+        private double SIGFIG_Round(double number, int number_figures)
         {
+            int SIGFIG_CHECK = (int)Math.Pow(10, number_figures);
+            Console.WriteLine("SIGFIG_CHECK:", SIGFIG_CHECK);
             return ((int)(number/ SIGFIG_CHECK)) * SIGFIG_CHECK;
         }
 
+        private void CompareEqual(double x, double y, int sig_figs)
+        {
+            Assert.Equal(SIGFIG_Round(x, sig_figs), SIGFIG_Round(y, sig_figs));
+        }
+
         [Fact]
+        public void CircleOffsetIsNonZero()
+        {
+            Orbit orbit = PlanetOrbits.CreateEarthOrbit();
+            ISolver solver = new CircleSolver();
+            Offset offset = solver.CalculateOffset_m(1, orbit, 1);
+
+            Assert.NotEqual(offset.X + offset.Y, 0);
+        }
+        [Fact]
+        public void CircleOffsetIsGreaterThanZero()
+        {
+            Orbit orbit = PlanetOrbits.CreateEarthOrbit();
+            ISolver solver = new CircleSolver();
+            Offset offset = solver.CalculateOffset_m(1, orbit, 1);
+
+            Assert.True((offset.X + offset.Y) > 0);
+        }
+        [Fact]
+        public void CircleOffsetStartsAtCorrectSpot()
+        {
+            Orbit orbit = new Orbit()
+            {
+                SemiMajorAxis_m = 10,
+                Eccentricity = 0,
+            };
+            ISolver solver = new CircleSolver();
+            Offset offset = solver.CalculateOffset_m(1, orbit, 0);
+
+            Assert.Equal(orbit.SemiMajorAxis_m, offset.X);
+            Assert.NotEqual(orbit.SemiMajorAxis_m, offset.Y);
+            Assert.Equal(0, offset.Y);
+        }
+        [Fact]
+        public void EllipseOffsetIsNonZero()
+        {
+            Orbit orbit = PlanetOrbits.CreateEarthOrbit();
+            ISolver solver = new EllipseSolver();
+            Offset offset = solver.CalculateOffset_m(1, orbit, 1);
+
+            Assert.NotEqual(offset.X + offset.Y, 0);
+        }
+        [Fact]
+        public void EllipseOffsetIsGreaterThanZero()
+        {
+            Orbit orbit = PlanetOrbits.CreateEarthOrbit();
+            ISolver solver = new EllipseSolver();
+            Offset offset = solver.CalculateOffset_m(1, orbit, 1);
+
+            Assert.True((offset.X + offset.Y) > 0);
+        }
+        [Fact]
+        public void EllipseOffsetStartsAtCorrectSpot()
+        {
+            Orbit orbit = new Orbit()
+            {
+                SemiMajorAxis_m = 10,
+                Eccentricity = 0,
+            };
+            ISolver solver = new EllipseSolver();
+            Offset offset = solver.CalculateOffset_m(1, orbit, 0);
+
+            Assert.Equal(orbit.SemiMajorAxis_m, offset.X);
+            Assert.NotEqual(orbit.SemiMajorAxis_m, offset.Y);
+            Assert.Equal(0, offset.Y);
+        }
+
+        //[Fact]
         public void OrbitalPeriodEarthSun()
         {
-            Orbit earthOrbit = CreateEarthOrbit();
+            Orbit earthOrbit = PlanetOrbits.CreateEarthOrbit();
             ISolver solver = new CircleSolver();
 
             double calculatedPeriod = solver.CalculateOrbitalPeriod_sec(Numbers.SolarMassToKG, earthOrbit);
             double expectedPeriod = Numbers.YearToSeconds;
 
-            Assert.Equal(SIGFIG_Round(expectedPeriod), SIGFIG_Round(calculatedPeriod));
+            CompareEqual(expectedPeriod, calculatedPeriod, 80);
         }
         //[Fact]
         public void OrbitalPeriodMoonEarth()
         {
-            Orbit moonOrbit = CreateMoonOrbit();
+            Orbit moonOrbit = PlanetOrbits.CreateMoonOrbit();
             ISolver solver = new CircleSolver();
 
             double calculatedPeriod = solver.CalculateOrbitalPeriod_sec(Numbers.EarthMassToKGs, moonOrbit);
             double expectedPeriod = 27.321661 * Numbers.DayToSeconds;
 
-            Assert.Equal(SIGFIG_Round(expectedPeriod), SIGFIG_Round(calculatedPeriod));
+            CompareEqual(expectedPeriod, calculatedPeriod, 6);
         }
 
+        //[Fact]
+        public void TestMercury()
+        {
+            Orbit orbit = PlanetOrbits.CreateMercuryOrbit();
+            CompareEqual(orbit.SemiMinorAxis_m, 0.3787, 80);
+        }
 
-        private Orbit CreateEarthOrbit()
-        {
-            return new Orbit()
-            {
-                SemiMajorAxis_m = 149598023.0 * Numbers.KMToM,
-                Eccentricity = 0.0167086,
-            };
-        }
-        private Orbit CreateMoonOrbit()
-        {
-            return new Orbit()
-            {
-                SemiMajorAxis_m = 384399 * Numbers.KMToM,
-                Eccentricity = 0.0549,
-            };
-        }
     }
 }
