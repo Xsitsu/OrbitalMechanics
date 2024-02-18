@@ -69,5 +69,17 @@ namespace OrbitalMechanics
         private double periapsis_m;                                     // Meters
         private double apoapsis_m;                                      // Meters
 
+        public override string ToString()
+        {
+            string str = "{";
+            str += "SemiMajorAxis: " + SemiMajorAxis_m;
+            str += ", Eccentricity: " + Eccentricity;
+            str += ", Inclination: " + Inclination_deg;
+            str += ", LongitudeOfAN: " + LongitudeOfAN_deg;
+            str += ", ArgumentOfPeriapsis: " + ArgumentOfPeriapsis_deg;
+            str += ", PeriapsisEpoch: " + PeriapsisEpoch_sec;
+            str += "}";
+            return str;
+        }
     }
 }
