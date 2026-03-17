@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,26 +8,26 @@ namespace OrbitalMechanics
     {
         public double SemiMajorAxis_m                                   // Meters
         {
-            get { return ellipse_m.SemiMajorAxis_l; }
+            get { return semiMajorAxis_m; }
             set
             {
-                ellipse_m.SemiMajorAxis_l = value;
-                CalculateApsides();
+                semiMajorAxis_m = value;
+                CalculateDerivedValues();
             }
         }
         public double Eccentricity                                      // Unitless
         {
-            get { return ellipse_m.Eccentricity; }
+            get { return eccentricity; }
             set
             {
-                ellipse_m.Eccentricity = value;
-                CalculateApsides();
+                eccentricity = value;
+                CalculateDerivedValues();
             }
         }
         public double Inclination_deg;                                  // Degrees
         public double LongitudeOfAN_deg;                                // Longitude of Ascending Node in degrees
         public double ArgumentOfPeriapsis_deg;                          // Degrees
-        public double PeriapsisEpoch_sec;                               // Seconds 
+        public double PeriapsisEpoch_sec;                               // Seconds
         public double Periapsis_m                                       // Meters
         {
             get { return periapsis_m; }
@@ -38,34 +38,38 @@ namespace OrbitalMechanics
         }
         public double SemiMinorAxis_m                                   // Meters
         {
-            get { return ellipse_m.SemiMinorAxis_l ; }
+            get { return semiMinorAxis_m; }
+        }
+        public double FocalDistance_m                                   // Meters
+        {
+            get { return focalDistance_m; }
         }
 
         public void SetOrbitData(double semiMajorAxis_m, double eccentricity, double inclination_deg,
         double longitudeOfAN_deg, double argumentOfPeriapsis_deg, double periapsisEpoch_sec)
         {
-            this.ellipse_m.SemiMajorAxis_l = semiMajorAxis_m;
-            this.ellipse_m.Eccentricity = eccentricity;
+            this.semiMajorAxis_m = semiMajorAxis_m;
+            this.eccentricity = eccentricity;
             this.Inclination_deg = inclination_deg;
             this.LongitudeOfAN_deg = longitudeOfAN_deg;
             this.ArgumentOfPeriapsis_deg = argumentOfPeriapsis_deg;
             this.PeriapsisEpoch_sec = periapsisEpoch_sec;
 
-            CalculateApsides();
+            CalculateDerivedValues();
         }
 
-        private void CalculateApsides()
+        private void CalculateDerivedValues()
         {
-            periapsis_m = ellipse_m.SemiMajorAxis_l - ellipse_m.FocalDistance_l;
-            apoapsis_m = ellipse_m.SemiMajorAxis_l + ellipse_m.FocalDistance_l;
+            semiMinorAxis_m = semiMajorAxis_m * Math.Sqrt(1 - Math.Pow(eccentricity, 2));
+            focalDistance_m = Math.Sqrt(Math.Pow(semiMajorAxis_m, 2) - Math.Pow(semiMinorAxis_m, 2));
+            periapsis_m = semiMajorAxis_m - focalDistance_m;
+            apoapsis_m = semiMajorAxis_m + focalDistance_m;
         }
 
-
-        private Ellipse ellipse_m = new Ellipse();                      // Meters (for length members)
-        //private double inclination_deg;                               // Degrees
-        //private double longitudeOfAN_deg;                             // Longitude of Ascending Node in degrees
-        //private double argumentOfPeriapsis_deg;                       // Degrees
-        //private double periapsisEpoch_sec;                            // Seconds
+        private double semiMajorAxis_m;                                 // Meters
+        private double semiMinorAxis_m;                                 // Meters
+        private double focalDistance_m;                                 // Meters
+        private double eccentricity;                                    // Unitless
         private double periapsis_m;                                     // Meters
         private double apoapsis_m;                                      // Meters
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Xunit;
 using OrbitalMechanics;
 
@@ -9,20 +9,20 @@ namespace OrbitalMechanicsTests
         [Fact]
         public void ZeroEccentricitySemiMinorAxis()
         {
-            Ellipse ellipse = new Ellipse();
-            ellipse.SemiMajorAxis_l = 1000;
-            ellipse.Eccentricity = 0;
+            Orbit orbit = new Orbit();
+            orbit.SemiMajorAxis_m = 1000;
+            orbit.Eccentricity = 0;
 
-            Assert.Equal(ellipse.SemiMajorAxis_l, ellipse.SemiMinorAxis_l);
+            Assert.Equal(orbit.SemiMajorAxis_m, orbit.SemiMinorAxis_m);
         }
         [Fact]
         public void ZeroEccentricityFocalDistance()
         {
-            Ellipse ellipse = new Ellipse();
-            ellipse.SemiMajorAxis_l = 1000;
-            ellipse.Eccentricity = 0;
+            Orbit orbit = new Orbit();
+            orbit.SemiMajorAxis_m = 1000;
+            orbit.Eccentricity = 0;
 
-            Assert.Equal(ellipse.FocalDistance_l, 0);
+            Assert.Equal(orbit.FocalDistance_m, 0);
         }
     }
 }
